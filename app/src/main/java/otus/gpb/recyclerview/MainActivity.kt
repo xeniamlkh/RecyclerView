@@ -4,9 +4,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity(), MessagesAdapterListener {
+
+    private lateinit var recycleView: RecyclerView
+    private lateinit var layoutManager: LinearLayoutManager
 
     private val messagesAdapter by lazy { MessagesAdapter() }
     private val messagesListDataSource = DataSource().getMessages()
@@ -17,9 +21,21 @@ class MainActivity : AppCompatActivity(), MessagesAdapterListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        recycleView = findViewById<RecyclerView>(R.id.recyclerView)
+        layoutManager = LinearLayoutManager(this)
+        recycleView.layoutManager = layoutManager
+        recycleView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+        ItemTouchHelper(ItemTouchHelperCallback(this)).attachToRecyclerView(recycleView)
+
         messagesList.addAll(messagesListDataSource)
 
-        createUpdateRecyclerView(messagesList)
+        updateRecyclerView(messagesList)
+
+        val scrollListener = ScrollListener(layoutManager) {
+            loadMoreMessages()
+        }
+        recycleView.addOnScrollListener(scrollListener)
+        scrollListener.onLoadFinished()
     }
 
     override fun onItemSwipe(position: Int) {
@@ -28,14 +44,16 @@ class MainActivity : AppCompatActivity(), MessagesAdapterListener {
         messagesList.clear()
         messagesList.addAll(newList)
 
-        createUpdateRecyclerView(messagesList)
+        updateRecyclerView(messagesList)
     }
 
-    private fun createUpdateRecyclerView(messagesList: List<Chat>) {
+    private fun updateRecyclerView(messagesList: List<Chat>) {
         messagesAdapter.submitList(messagesList)
-        val recycleView = findViewById<RecyclerView>(R.id.recyclerView)
         recycleView.adapter = messagesAdapter
-        recycleView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
-        ItemTouchHelper(ItemTouchHelperCallback(this)).attachToRecyclerView(recycleView)
+    }
+
+    private fun loadMoreMessages() {
+        messagesList.addAll(messagesListDataSource)
+        updateRecyclerView(messagesList)
     }
 }
