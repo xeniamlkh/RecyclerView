@@ -4,7 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 
-class MessagesAdapter : ListAdapter<Chat, MessageViewHolder>(MessagesDiffCallback()) {
+class MessagesAdapter() :
+    ListAdapter<Chat, MessageViewHolder>(MessagesDiffCallback()) {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int

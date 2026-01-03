@@ -85,7 +85,4 @@ class DataSource {
     )
 
     fun getMessages(): List<Chat> = messagesList
-
-    fun deleteMessage(id: Int): List<Chat> = messagesList.filter { it.id != id }
-
 }
