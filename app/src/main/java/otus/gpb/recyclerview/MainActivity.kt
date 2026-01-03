@@ -2,6 +2,7 @@ package otus.gpb.recyclerview
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
@@ -17,5 +18,7 @@ class MainActivity : AppCompatActivity() {
 
         val recycleView = findViewById<RecyclerView>(R.id.recyclerView)
         recycleView.adapter = messagesAdapter
+
+        recycleView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
     }
 }
